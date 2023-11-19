@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="QuizService"
+    targetNamespace="http://www.example.com/quiz"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://www.example.com/quiz"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <types>
+        <schema targetNamespace="http://www.example.com/quiz" xmlns="http://www.w3.org/2001/XMLSchema">
+            <element name="Question">
+                <complexType>
+                    <sequence>
+                        <element name="id" type="xsd:int"/>
+                        <element name="text" type="xsd:string"/>
+                        <element name="options" type="xsd:string"/>
+                        <element name="correctOption" type="xsd:int"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="Answer">
+                <complexType>
+                    <sequence>
+                        <element name="id" type="xsd:int"/>
+                        <element name="selectedOption" type="xsd:int"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+    <message name="getQuestionRequest"/>
+
+    <message name="getQuestionResponse">
+        <part name="question" element="tns:Question"/>
+    </message>
+
+    <message name="submitAnswerRequest">
+        <part name="answer" element="tns:Answer"/>
+    </message>
+
+    <message name="submitAnswerResponse">
+        <part name="result" type="xsd:string"/>
+    </message>
+
+    <portType name="QuizPortType">
+        <operation name="getQuestion">
+            <input message="tns:getQuestionRequest"/>
+            <output message="tns:getQuestionResponse"/>
+        </operation>
+        <operation name="submitAnswer">
+            <input message="tns:submitAnswerRequest"/>
+            <output message="tns:submitAnswerResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="QuizBinding" type="tns:QuizPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getQuestion">
+            <soap:operation soapAction="getQuestion"/>
+            <input>
+                <soap:body use="encoded" namespace="http://www.example.com/quiz" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://www.example.com/quiz" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+        <operation name="submitAnswer">
+            <soap:operation soapAction="submitAnswer"/>
+            <input>
+                <soap:body use="encoded" namespace="http://www.example.com/quiz" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" namespace="http://www.example.com/quiz" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="QuizService">
+        <port name="QuizPort" binding="tns:QuizBinding">
+            <soap:address location="http://localhost:3000/quiz"/>
+        </port>
+    </service>
+</definitions>
